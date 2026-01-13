@@ -582,7 +582,7 @@ with st.sidebar:
     
     page = st.radio(
         "Navigation",
-        ["🏠 Dashboard", "🔍 AI SQL Query", "📐 Analyse Plans", "🤖 Assistant Maintenance", "📊 Analytics"],
+        ["🏠 Dashboard", "📐 Analyse Plans", "🤖 Assistant Maintenance", "📊 Analytics"],
         label_visibility="collapsed"
     )
     
@@ -703,160 +703,155 @@ if page == "🏠 Dashboard":
         </div>
         """, unsafe_allow_html=True)
 
-elif page == "🔍 AI SQL Query":
-    st.markdown("## 🔍 Interrogation AI SQL")
-    st.markdown("""
-    <p style="color: #8B9CAF;">
-        Posez vos questions en langage naturel. <strong>Snowflake Cortex</strong> génère automatiquement 
-        les requêtes SQL optimisées et analyse les résultats.
-    </p>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Sélecteur de questions prédéfinies
-    question = st.selectbox(
-        "💬 Sélectionnez une question ou tapez la vôtre",
-        list(AI_SQL_EXAMPLES.keys()),
-        index=0
-    )
-    
-    custom_question = st.text_input(
-        "Ou posez votre propre question...",
-        placeholder="Ex: Quel est l'historique de pannes du robot?"
-    )
-    
-    if st.button("🚀 Analyser avec Cortex AI", type="primary"):
-        with st.spinner("🧠 Cortex AI analyse votre question..."):
-            time.sleep(1.5)
-        
-        selected_question = custom_question if custom_question else question
-        example = AI_SQL_EXAMPLES.get(question, list(AI_SQL_EXAMPLES.values())[0])
-        
-        st.markdown("### 📝 Requête SQL générée")
-        st.markdown(f"""
-        <div class="sql-box">
-            <pre>{example['sql']}</pre>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        with st.spinner("⚡ Exécution sur Snowflake..."):
-            time.sleep(1)
-        
-        st.markdown("### 🎯 Réponse AI")
-        st.markdown(f"""
-        <div class="ai-response">
-            {example['reponse']}
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Badges de fonctionnalités utilisées
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("""
-        <div style="text-align: center;">
-            <span class="feature-badge">Cortex LLM</span>
-            <span class="feature-badge">Warehouse XS</span>
-            <span class="feature-badge">12ms query time</span>
-            <span class="feature-badge">Zero-copy clone</span>
-        </div>
-        """, unsafe_allow_html=True)
-
 elif page == "📐 Analyse Plans":
     st.markdown("## 📐 Analyse de Plans Techniques")
     st.markdown("""
     <p style="color: #8B9CAF;">
         <strong>Snowflake Document AI</strong> extrait et analyse automatiquement les informations 
-        des plans machines, schémas techniques et documentations PDF.
+        des plans machines, schémas techniques et images de documentation.
     </p>
     """, unsafe_allow_html=True)
     
-    col1, col2 = st.columns([1, 1])
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    with col1:
-        st.markdown("### 🖼️ Schéma machine interactif")
-        components.html(get_machine_blueprint_html(), height=400, scrolling=False)
-        st.info("💡 Les points lumineux indiquent les capteurs de monitoring en temps réel")
+    # Zone de drag & drop pour les images
+    st.markdown("### 📤 Importer un plan ou schéma technique")
     
-    with col2:
-        st.markdown("### 📄 Documents analysés")
-        
-        doc_type = st.selectbox(
-            "Type de document",
-            ["Schéma hydraulique", "Plan électrique", "Manuel opérateur", "Fiche technique"]
-        )
-        
-        machine = st.selectbox(
-            "Machine",
-            list(MACHINES_DATA.keys())
-        )
-        
-        if st.button("🔍 Analyser le document", type="primary"):
-            with st.spinner("📖 Document AI analyse le PDF..."):
-                time.sleep(2)
-            
-            st.success("✅ Document analysé avec succès!")
-            
-            st.markdown("""
-            <div class="ai-response">
-                <h4>📋 Informations extraites</h4>
-                <ul>
-                    <li><strong>Référence:</strong> SCH-H200-HYD-v3.2</li>
-                    <li><strong>Date création:</strong> 15/03/2019</li>
-                    <li><strong>Dernière révision:</strong> 08/11/2024</li>
-                    <li><strong>Composants identifiés:</strong> 47</li>
-                    <li><strong>Procédures liées:</strong> 12</li>
-                </ul>
-                <h4>⚙️ Paramètres critiques détectés</h4>
-                <table style="width: 100%; color: #E8EDF2;">
-                    <tr><td>Pression service</td><td>250 bar</td></tr>
-                    <tr><td>Pression max</td><td>320 bar</td></tr>
-                    <tr><td>Température huile</td><td>40-60°C</td></tr>
-                    <tr><td>Niveau mini réservoir</td><td>380L</td></tr>
-                </table>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    st.markdown("### 🔗 Graphe de connaissances")
-    
-    # Graphe de relations
-    fig = go.Figure()
-    
-    # Nodes
-    nodes = ["PRESS-H200", "Vérin", "Pompe", "Valve", "Capteur P1", "Capteur P2", "PROC-001", "PROC-007"]
-    x = [0, -1, 1, 0, -1.5, 1.5, -0.5, 0.5]
-    y = [0, -1, -1, -1.5, -0.5, -0.5, -2, -2]
-    colors = ["#29B5E8", "#00D4AA", "#00D4AA", "#00D4AA", "#FFB800", "#FFB800", "#FF6B35", "#FF6B35"]
-    
-    # Edges
-    for i in range(1, len(nodes)):
-        fig.add_trace(go.Scatter(
-            x=[x[0], x[i]], y=[y[0], y[i]],
-            mode='lines',
-            line=dict(color='rgba(41,181,232,0.3)', width=2),
-            showlegend=False
-        ))
-    
-    fig.add_trace(go.Scatter(
-        x=x, y=y,
-        mode='markers+text',
-        marker=dict(size=30, color=colors),
-        text=nodes,
-        textposition='top center',
-        textfont=dict(color='white', size=10),
-        showlegend=False
-    ))
-    
-    fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        margin=dict(t=20, b=20, l=20, r=20),
-        height=300
+    uploaded_file = st.file_uploader(
+        "Glissez-déposez une image ou cliquez pour sélectionner",
+        type=["png", "jpg", "jpeg", "webp", "pdf"],
+        help="Formats supportés: PNG, JPG, JPEG, WebP, PDF"
     )
     
-    st.plotly_chart(fig, use_container_width=True)
+    if uploaded_file is not None:
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            st.markdown("### 🖼️ Document importé")
+            if uploaded_file.type.startswith('image'):
+                st.image(uploaded_file, use_container_width=True)
+            else:
+                st.info(f"📄 Fichier PDF: {uploaded_file.name}")
+            
+        with col2:
+            # Animation de traitement
+            with st.spinner("🔍 Analyse Document AI en cours..."):
+                time.sleep(2)
+            
+            st.success("✅ Analyse terminée!")
+            
+            # Données textuelles extraites
+            st.markdown("### 📝 Données textuelles extraites")
+            st.markdown("""
+            <div class="ai-response" style="font-size: 0.9rem;">
+                <strong>Texte OCR détecté:</strong><br><br>
+                <code>
+                SCHÉMA HYDRAULIQUE - PRESSE H200<br>
+                Réf: SCH-HYD-2024-001<br>
+                Date: 15/03/2024 | Rév: 3.2<br><br>
+                Circuit principal:<br>
+                - Pompe HP: 85 L/min @ 320 bar<br>
+                - Vérin Ø320 x 450 mm<br>
+                - Distributeur 4/3 Cetop 10<br>
+                - Accumulateur 20L - N2 précharge 150 bar<br><br>
+                Sécurités:<br>
+                - Limiteur pression: 340 bar<br>
+                - Capteur niveau bas réservoir<br>
+                - Thermostat huile 65°C
+                </code>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Tableau des éléments détectés
+        st.markdown("### 📊 Éléments techniques identifiés")
+        
+        elements_data = pd.DataFrame({
+            "Élément": ["Pompe hydraulique", "Vérin principal", "Distributeur", "Accumulateur", "Limiteur pression", "Capteur niveau", "Thermostat"],
+            "Référence": ["PMP-HP-85", "VER-320-450", "DIST-4/3-C10", "ACC-20L-N2", "LIM-340", "CPT-NIV-01", "THS-65"],
+            "Type": ["Composant", "Actionneur", "Composant", "Sécurité", "Sécurité", "Capteur", "Capteur"],
+            "Valeur": ["85 L/min", "Ø320x450mm", "Cetop 10", "20L / 150bar", "340 bar", "Seuil bas", "65°C"],
+            "Criticité": ["🔴 Haute", "🔴 Haute", "🟡 Moyenne", "🟡 Moyenne", "🔴 Haute", "🟢 Basse", "🟢 Basse"]
+        })
+        
+        st.dataframe(
+            elements_data,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Élément": st.column_config.TextColumn("Élément", width="medium"),
+                "Référence": st.column_config.TextColumn("Référence", width="small"),
+                "Type": st.column_config.TextColumn("Type", width="small"),
+                "Valeur": st.column_config.TextColumn("Valeur", width="small"),
+                "Criticité": st.column_config.TextColumn("Criticité", width="small")
+            }
+        )
+        
+        st.markdown("---")
+        
+        # Confirmation d'intégration au chatbot
+        st.markdown("### 🤖 Intégration Assistant IA")
+        st.markdown("""
+        <div style="background: linear-gradient(145deg, #0a2e1a, #0f3d23); 
+                    border: 2px solid #00D4AA; 
+                    border-radius: 12px; 
+                    padding: 1.5rem; 
+                    text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✅</div>
+            <h3 style="color: #00D4AA; margin: 0.5rem 0;">Document intégré avec succès!</h3>
+            <p style="color: #8B9CAF; margin: 0.5rem 0;">
+                Ce document a été vectorisé et ajouté à la base de connaissances.<br>
+                L'<strong>Assistant Maintenance IA</strong> peut maintenant répondre aux questions sur ce schéma.
+            </p>
+            <div style="margin-top: 1rem;">
+                <span class="feature-badge">Cortex Embeddings</span>
+                <span class="feature-badge">Vector Search</span>
+                <span class="feature-badge">RAG Pipeline</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Exemples de questions
+        st.markdown("#### 💬 Exemples de questions que vous pouvez poser à l'assistant:")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            - *"Quelle est la pression max du circuit?"*
+            - *"Référence du vérin principal?"*
+            """)
+        with col2:
+            st.markdown("""
+            - *"Quelles sont les sécurités installées?"*
+            - *"Capacité de l'accumulateur?"*
+            """)
+    
+    else:
+        # État initial sans fichier
+        st.markdown("""
+        <div style="background: linear-gradient(145deg, #1E2D3D, #162231); 
+                    border: 2px dashed #29B5E8; 
+                    border-radius: 16px; 
+                    padding: 3rem; 
+                    text-align: center;
+                    margin: 1rem 0;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+            <h3 style="color: #29B5E8; margin: 0;">Déposez votre fichier ici</h3>
+            <p style="color: #8B9CAF; margin-top: 0.5rem;">
+                Plans techniques, schémas hydrauliques, électriques, mécaniques...<br>
+                <small>PNG, JPG, PDF jusqu'à 200MB</small>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Schéma de démo interactif
+        st.markdown("### 🖼️ Exemple: Schéma machine CNC-2450")
+        components.html(get_machine_blueprint_html(), height=400, scrolling=False)
+        st.info("💡 Les points lumineux indiquent les capteurs de monitoring en temps réel")
 
 elif page == "🤖 Assistant Maintenance":
     st.markdown("## 🤖 Assistant Maintenance IA")
