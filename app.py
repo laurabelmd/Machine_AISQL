@@ -521,8 +521,8 @@ def create_sensor_realtime():
 def get_machine_blueprint_html():
     """Retourne le HTML complet pour le schéma de machine"""
     return """
-    <div style="background: #0a0f14; border: 2px solid #29B5E8; border-radius: 12px; padding: 20px;">
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+    <div style="background: #0a0f14; border: 2px solid #29B5E8; border-radius: 12px; padding: 15px; margin: 0;">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; display: block;">
             <!-- Base -->
             <rect x="50" y="200" width="300" height="60" fill="#1E2D3D" stroke="#29B5E8" stroke-width="2"/>
             
@@ -774,7 +774,7 @@ elif page == "📐 Analyse Plans":
     
     with col1:
         st.markdown("### 🖼️ Schéma machine interactif")
-        components.html(get_machine_blueprint_html(), height=350)
+        components.html(get_machine_blueprint_html(), height=400, scrolling=False)
         st.info("💡 Les points lumineux indiquent les capteurs de monitoring en temps réel")
     
     with col2:
