@@ -602,7 +602,7 @@ with st.sidebar:
     st.markdown("""
     <div style="text-align: center; padding: 0.5rem;">
         <span class="snowflake-badge">
-            <span>❄️</span> Snowflake Partner Demo
+            <span>❄️</span> Snowflake Demo
         </span>
     </div>
     """, unsafe_allow_html=True)
