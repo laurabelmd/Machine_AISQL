@@ -1094,11 +1094,16 @@ elif page == "📊 Analytics":
     # Tableau détaillé
     st.markdown("### 📋 Historique des interventions")
     
-    # Style du dataframe
+    # Affichage du dataframe
     st.dataframe(
-        MAINTENANCE_HISTORY.tail(10).style.background_gradient(subset=['Durée (h)'], cmap='Blues'),
+        MAINTENANCE_HISTORY.tail(10),
         use_container_width=True,
-        hide_index=True
+        hide_index=True,
+        column_config={
+            "Date": st.column_config.DateColumn("Date", format="DD/MM/YYYY"),
+            "Durée (h)": st.column_config.ProgressColumn("Durée (h)", min_value=0, max_value=8, format="%.1f h"),
+            "Coût (€)": st.column_config.NumberColumn("Coût (€)", format="%.0f €")
+        }
     )
     
     # Export
