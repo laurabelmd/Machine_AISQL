@@ -5,6 +5,7 @@ Analyse de plans machines & Assistance maintenance par IA
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -517,45 +518,49 @@ def create_sensor_realtime():
     )
     return fig
 
-def display_machine_blueprint():
-    """Affiche un schéma de machine stylisé en SVG"""
-    svg = """
-    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-        <!-- Base -->
-        <rect x="50" y="200" width="300" height="60" fill="#1E2D3D" stroke="#29B5E8" stroke-width="2"/>
-        
-        <!-- Corps principal -->
-        <rect x="80" y="80" width="240" height="120" fill="#162231" stroke="#29B5E8" stroke-width="2"/>
-        
-        <!-- Broche -->
-        <rect x="170" y="40" width="60" height="50" fill="#2E3A47" stroke="#00D4AA" stroke-width="2"/>
-        <circle cx="200" cy="50" r="15" fill="#0D1B2A" stroke="#29B5E8" stroke-width="2"/>
-        
-        <!-- Points de monitoring -->
-        <circle cx="100" cy="120" r="8" fill="#00D4AA" opacity="0.8">
-            <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="200" cy="150" r="8" fill="#FFB800" opacity="0.8">
-            <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="300" cy="120" r="8" fill="#00D4AA" opacity="0.8">
-            <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
-        </circle>
-        
-        <!-- Labels -->
-        <text x="100" y="105" fill="#8B9CAF" font-size="10" text-anchor="middle">AXE X</text>
-        <text x="200" y="135" fill="#8B9CAF" font-size="10" text-anchor="middle">BROCHE</text>
-        <text x="300" y="105" fill="#8B9CAF" font-size="10" text-anchor="middle">AXE Y</text>
-        
-        <!-- Indicateurs -->
-        <rect x="320" y="90" width="25" height="15" fill="#162231" stroke="#00D4AA" stroke-width="1"/>
-        <text x="332" y="101" fill="#00D4AA" font-size="8" text-anchor="middle">OK</text>
-        
-        <rect x="320" y="140" width="25" height="15" fill="#162231" stroke="#FFB800" stroke-width="1"/>
-        <text x="332" y="151" fill="#FFB800" font-size="8" text-anchor="middle">72%</text>
-    </svg>
+def get_machine_blueprint_html():
+    """Retourne le HTML complet pour le schéma de machine"""
+    return """
+    <div style="background: #0a0f14; border: 2px solid #29B5E8; border-radius: 12px; padding: 20px;">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+            <!-- Base -->
+            <rect x="50" y="200" width="300" height="60" fill="#1E2D3D" stroke="#29B5E8" stroke-width="2"/>
+            
+            <!-- Corps principal -->
+            <rect x="80" y="80" width="240" height="120" fill="#162231" stroke="#29B5E8" stroke-width="2"/>
+            
+            <!-- Broche -->
+            <rect x="170" y="40" width="60" height="50" fill="#2E3A47" stroke="#00D4AA" stroke-width="2"/>
+            <circle cx="200" cy="50" r="15" fill="#0D1B2A" stroke="#29B5E8" stroke-width="2"/>
+            
+            <!-- Points de monitoring avec animation -->
+            <circle cx="100" cy="120" r="8" fill="#00D4AA">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="200" cy="150" r="8" fill="#FFB800">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="300" cy="120" r="8" fill="#00D4AA">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            
+            <!-- Labels -->
+            <text x="100" y="105" fill="#8B9CAF" font-size="10" text-anchor="middle" font-family="sans-serif">AXE X</text>
+            <text x="200" y="135" fill="#8B9CAF" font-size="10" text-anchor="middle" font-family="sans-serif">BROCHE</text>
+            <text x="300" y="105" fill="#8B9CAF" font-size="10" text-anchor="middle" font-family="sans-serif">AXE Y</text>
+            
+            <!-- Indicateurs -->
+            <rect x="320" y="90" width="25" height="15" fill="#162231" stroke="#00D4AA" stroke-width="1"/>
+            <text x="332" y="101" fill="#00D4AA" font-size="8" text-anchor="middle" font-family="sans-serif">OK</text>
+            
+            <rect x="320" y="140" width="25" height="15" fill="#162231" stroke="#FFB800" stroke-width="1"/>
+            <text x="332" y="151" fill="#FFB800" font-size="8" text-anchor="middle" font-family="sans-serif">72%</text>
+            
+            <!-- Titre -->
+            <text x="200" y="280" fill="#29B5E8" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="bold">CNC-2450 - Vue schématique</text>
+        </svg>
+    </div>
     """
-    return svg
 
 # =============================================================================
 # SIDEBAR
@@ -769,14 +774,8 @@ elif page == "📐 Analyse Plans":
     
     with col1:
         st.markdown("### 🖼️ Schéma machine interactif")
-        st.markdown(f"""
-        <div class="blueprint-container">
-            {display_machine_blueprint()}
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.info("💡 Cliquez sur les points lumineux pour voir les détails capteurs")
+        components.html(get_machine_blueprint_html(), height=350)
+        st.info("💡 Les points lumineux indiquent les capteurs de monitoring en temps réel")
     
     with col2:
         st.markdown("### 📄 Documents analysés")
