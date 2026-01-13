@@ -521,8 +521,10 @@ def create_sensor_realtime():
 def get_machine_blueprint_html():
     """Retourne le HTML complet pour le schéma de machine"""
     return """
-    <div style="background: #0a0f14; border: 2px solid #29B5E8; border-radius: 12px; padding: 15px; margin: 0;">
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; display: block;">
+    <html>
+    <body style="margin: 0; padding: 0; background: transparent;">
+    <div style="background: #0a0f14; border: 2px solid #29B5E8; border-radius: 12px; padding: 20px;">
+        <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" style="width: 100%; display: block;">
             <!-- Base -->
             <rect x="50" y="200" width="300" height="60" fill="#1E2D3D" stroke="#29B5E8" stroke-width="2"/>
             
@@ -557,9 +559,11 @@ def get_machine_blueprint_html():
             <text x="332" y="151" fill="#FFB800" font-size="8" text-anchor="middle" font-family="sans-serif">72%</text>
             
             <!-- Titre -->
-            <text x="200" y="280" fill="#29B5E8" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="bold">CNC-2450 - Vue schématique</text>
+            <text x="200" y="295" fill="#29B5E8" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="bold">CNC-2450 - Vue schématique</text>
         </svg>
     </div>
+    </body>
+    </html>
     """
 
 # =============================================================================
@@ -850,7 +854,7 @@ elif page == "📐 Analyse Plans":
         
         # Schéma de démo interactif
         st.markdown("### 🖼️ Exemple: Schéma machine CNC-2450")
-        components.html(get_machine_blueprint_html(), height=400, scrolling=False)
+        components.html(get_machine_blueprint_html(), height=450, scrolling=False)
         st.info("💡 Les points lumineux indiquent les capteurs de monitoring en temps réel")
 
 elif page == "🤖 Assistant Maintenance":
